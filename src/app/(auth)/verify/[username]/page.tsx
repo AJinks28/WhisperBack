@@ -27,12 +27,10 @@ export default function VerifyAccount() {
   const { toast } = useToast();
 
   console.log("Params: ", params);
-  //similar to signup
   const form = useForm<z.infer<typeof verifySchema>>({
     resolver: zodResolver(verifySchema),
   });
 
-  //similar to signup
   const onSubmit = async (data: z.infer<typeof verifySchema>) => {
     try {
       const response = await axios.post<ApiResponse>(`/api/verify-code`, {

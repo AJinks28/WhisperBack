@@ -22,11 +22,17 @@ export async function GET(request: Request) {
 
 
   try {
+    // const unwoundUser = await UserModel.aggregate([
+    //   { $match: { _id: userId } },
+    //   { $unwind: { path: '$messages', preserveNullAndEmptyArrays: true } }
+    // ]).exec();
+    // console.log(unwoundUser);
     const user = await UserModel.aggregate([
       { $match: { _id: userId } },
-      { $unwind: '$messages' },//separating msg array of the user so that we can perform operation on them
-      { $sort: { 'messages.createdAt': -1 } },
-      { $group: { _id: '$_id', messages: { $push: '$messages' } } },
+      { $unwind: { path: '$messages', preserveNullAndEmptyArrays: true } }, // Separates the message array into individual documents
+      { $sort: { 'messages.createdAt': -1 } }, // Sorts the documents by createdAt field in descending order
+      { $group: { _id: '$_id', messages: { $push: '$messages' } } }, // Groups the messages back into an array
+      { $project: { _id: 1, messages: 1 } } // Optionally, to include only the required fields
     ]).exec();
 
     if (!user || user.length === 0) {

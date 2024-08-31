@@ -18,7 +18,6 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import { signInSchema } from '@/schemas/signInSchema';
 
-//We designed sign-up manually and sign-in using nextAuth , hence format of frontend will be different
 
 export default function SignInForm() {
   const router = useRouter();
@@ -36,11 +35,8 @@ export default function SignInForm() {
 
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
-    //NextAuth
-    //signIn(provider, options: SignInOptions, authorizationParams?: SignInAuthorizationParams)
-    //signIn here is an asynchronous function that comes from next-auth, which handles signing in a user.
     const result = await signIn('credentials', {
-      redirect: false,//This indicates that the user should not be redirected after the sign-in attempt. 
+      redirect: false,
       identifier: data.identifier,
       password: data.password,
     });

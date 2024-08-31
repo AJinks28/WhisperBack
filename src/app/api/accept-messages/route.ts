@@ -79,9 +79,9 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Retrieve the user from the database using the ID
-    const foundUser = await UserModel.findById(user._id);
 
+    const foundUser = await UserModel.findById(user._id);
+    // console.log("this is : ", foundUser);
     if (!foundUser) {
       // User not found
       return Response.json(

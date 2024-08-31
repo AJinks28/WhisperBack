@@ -1,5 +1,4 @@
-import { resend } from "@/lib/resend";
-// import VerificationEmail2 from "../../emails/";
+
 import { ApiResponse } from '@/types/ApiResponse';
 import nodemailer from "nodemailer"
 
@@ -13,7 +12,7 @@ export async function sendVerificationEmail(
     var smtpConfig = {
       host: 'smtp.gmail.com',
       port: 465,
-      secure: true, // use SSL
+      secure: true,
       auth: {
         user: 'aekadam2002@gmail.com',
         pass: 'kfme epvo iwxs ouyc'
@@ -21,14 +20,6 @@ export async function sendVerificationEmail(
     };
     var transport = nodemailer.createTransport(smtpConfig);
 
-    // var transport = nodemailer.createTransport({
-    //   host: "sandbox.smtp.mailtrap.io",
-    //   port: 2525,
-    //   auth: {
-    //     user: "de829466a7cb9c",
-    //     pass: "5d4435425ae5bf"
-    //   }
-    // });
     const mailOptions = {
       from: 'dev@aekadam.com',
       to: email,
@@ -77,18 +68,6 @@ export async function sendVerificationEmail(
 `,
     }
     const mailResponse = await transport.sendMail(mailOptions);
-    console.log(mailResponse)
-    // console.log("send krna hai")
-    // const response = await resend.emails.send({
-    //   from: 'dev@aekadam.com',
-    //   to: email,
-    //   subject: 'Mystery Message Verification Code',
-    //   react: VerificationEmail({ username, otp: verifyCode }),
-    // });
-
-    // console.log(response);
-
-    // console.log("send hua hai")
     return { success: true, message: 'Verification email sent successfully.' };
   } catch (emailError) {
     console.error('Error sending verification email:', emailError);

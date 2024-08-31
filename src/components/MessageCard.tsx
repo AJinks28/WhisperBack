@@ -21,13 +21,11 @@ import { Button } from './ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { ApiResponse } from '@/types/ApiResponse';
 
-//defining type of MessageCardProp
 type MessageCardProps = {
   message: Message;
   onMessageDelete: (messageId: string) => void;
 };
 
-//Card,AlertDialog are imported from shadcn
 export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
   const { toast } = useToast();
 

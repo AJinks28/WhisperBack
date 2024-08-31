@@ -23,30 +23,17 @@ import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { signUpSchema } from '@/schemas/signUpSchema';
 
-//Debouncing is a technique where you delay the execution of a function until after a certain amount of time has passed. It ensures that the function is only called once after a certain period of time has passed since the last time it was invoked.
-//it helps in reducing requests to DB
-//usehooks-ts library is used
-
 export default function SignUpForm() {
   const [username, setUsername] = useState('');
   const [usernameMessage, setUsernameMessage] = useState('');
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  //useDebounce(value, delay)
-  //value is set after some delay
   const debouncedUsername = useDebounce(username, 300);
 
-  //allows you to access and manipulate the router object, which contains information about the current route
-  //help to navigate here and there on website
   const router = useRouter();
 
-  //toast is used for errors
-  //PTR: Add <Toaster/> in layout file just before the end of body
   const { toast } = useToast();
 
-
-  //zod implementation
-  //resolver: allows you to integrate custom validation with React Hook Form. In this case, it's used to integrate Zod for form validation.
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -55,8 +42,6 @@ export default function SignUpForm() {
       password: '',
     },
   });
-
-  //we will check username when page is reloaded along with when debouncedUsername is updated
   useEffect(() => {
     const checkUsernameUnique = async () => {
       if (debouncedUsername) {
@@ -84,8 +69,6 @@ export default function SignUpForm() {
     checkUsernameUnique();//run the method in useEffect
   }, [debouncedUsername]);
 
-  //z.infer: This is a utility type provided by Zod. It allows you to automatically infer the TypeScript type based on a Zod schema.
-  // (data: z.infer<typeof signUpSchema>) : data: This variable is being typed to match the inferred type from signUpSchema.
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
@@ -132,8 +115,6 @@ export default function SignUpForm() {
           </h1>
           <p className="mb-4">Sign up to start whisper your feedback</p>
         </div>
-        {/* shadcn/ui-> Form */}
-        {/* ...form is destructured and used */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 

@@ -23,29 +23,21 @@ function UserDashboard() {
 
   const { toast } = useToast();
 
-  //filtering msgs which do not have id = messageId
   const handleDeleteMessage = (messageId: string) => {
     setMessages(messages.filter((message) => message._id !== messageId));
   };
 
   const { data: session } = useSession();
 
-  //read react-hook-form docs for more info
   const form = useForm({
     resolver: zodResolver(AcceptMessageSchema),
   });
 
-  //watch: This method is used to monitor the value of specific form fields or the entire form. It allows you to dynamically react to changes in form values.
-  //setValue: This method is used to programmatically set the value of a specific form field.
   const { register, watch, setValue } = form;
 
-  //This continuously monitors the value.
   const acceptMessages = watch('acceptMessages');
 
 
-  //usecallback() : ensure that a function is only re-created when its dependencies change
-
-  //fetching acceptMessages variable(T or F) from backend
   const fetchAcceptMessages = useCallback(async () => {
     setIsSwitchLoading(true);
     try {
@@ -67,7 +59,6 @@ function UserDashboard() {
   }, [setValue, toast]);
 
 
-  //fetching all messages from backend
   const fetchMessages = useCallback(
     async (refresh: boolean = false) => {
       setIsLoading(true);
@@ -101,7 +92,6 @@ function UserDashboard() {
     [setIsLoading, setMessages, toast]
   );
 
-  // Fetch initial state from the server
   useEffect(() => {
     if (!session || !session.user) return;
 
@@ -111,7 +101,6 @@ function UserDashboard() {
   }, [session, setValue, toast, fetchAcceptMessages, fetchMessages]);
 
 
-  // Handle switch change-> reverse acceptMessages
   const handleSwitchChange = async () => {
     try {
       const response = await axios.post<ApiResponse>('/api/accept-messages', {
@@ -138,23 +127,17 @@ function UserDashboard() {
     }
   };
 
-  //if no user or no session -> return empty page
   if (!session || !session.user) {
     return <div></div>;
   }
 
   const { username } = session.user as User;
 
-  //creating profile url to ask messages which we are going to copy
-  //window.location.protocol --> http or https
-  //window.location.host --> localhost:3000
   const baseUrl = `${window.location.protocol}//${window.location.host}`;
   const profileUrl = `${baseUrl}/u/${username}`;
 
-  //copy profileurl
   const copyToClipboard = () => {
     navigator.clipboard.writeText(profileUrl);
-    //navigator access is there at frontend
     toast({
       title: 'URL Copied!',
       description: 'Profile URL has been copied to clipboard.',
@@ -178,9 +161,7 @@ function UserDashboard() {
         </div>
       </div>
 
-      {/* IMP */}
       <div className="mb-4">
-        {/*register:  It connects the input (or in this case, the Switch) to the form's state and validation. */}
         <Switch
           {...register('acceptMessages')}
           checked={acceptMessages}
@@ -191,7 +172,6 @@ function UserDashboard() {
           Accept Messages: {acceptMessages ? 'On' : 'Off'}
         </span>
       </div>
-      {/* seperator is horiz line */}
       <Separator />
 
       <Button
@@ -209,7 +189,6 @@ function UserDashboard() {
         )}
       </Button>
 
-      {/* mapping msgs to msg card */}
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {messages.length > 0 ? (
