@@ -42,15 +42,11 @@ function UserDashboard() {
     setIsSwitchLoading(true);
     try {
       const response = await axios.get<ApiResponse>('/api/accept-messages');
-      //set value for acceptMessages from response
       setValue('acceptMessages', response.data.isAcceptingMessages);
     } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
       toast({
         title: 'Error',
-        description:
-          axiosError.response?.data.message ??
-          'Failed to fetch message settings',
+        description: 'Failed to fetch message settings',
         variant: 'destructive',
       });
     } finally {
@@ -67,7 +63,6 @@ function UserDashboard() {
       try {
         const response = await axios.get<ApiResponse>('/api/get-messages');
 
-        //setting messages from response
         setMessages(response.data.messages || []);
 
         if (refresh) {
@@ -77,11 +72,9 @@ function UserDashboard() {
           });
         }
       } catch (error) {
-        const axiosError = error as AxiosError<ApiResponse>;
         toast({
           title: 'Error',
-          description:
-            axiosError.response?.data.message ?? 'Failed to fetch messages',
+          description: 'Failed to fetch messages',
           variant: 'destructive',
         });
       } finally {
@@ -107,7 +100,6 @@ function UserDashboard() {
         acceptMessages: !acceptMessages,
       });
 
-      //setting reversed value
       setValue('acceptMessages', !acceptMessages);
 
       toast({
@@ -116,11 +108,9 @@ function UserDashboard() {
       });
 
     } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
       toast({
         title: 'Error',
         description:
-          axiosError.response?.data.message ??
           'Failed to update message settings',
         variant: 'destructive',
       });
@@ -128,7 +118,7 @@ function UserDashboard() {
   };
 
   if (!session || !session.user) {
-    return <div></div>;
+    return <div>Please login</div>;
   }
 
   const { username } = session.user as User;

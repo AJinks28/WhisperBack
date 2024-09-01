@@ -8,7 +8,6 @@ import { User } from 'next-auth';
 
 function Navbar() {
   const { data: session } = useSession();
-  console.log("session Data in navbar: ", session);
   const user: User = session?.user;
 
   return (

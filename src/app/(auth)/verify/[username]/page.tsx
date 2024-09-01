@@ -18,15 +18,13 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { verifySchema } from '@/schemas/verifySchema';
 
-//PTR*: when we wnat dynamic data in url, we name folder with square bracket e.g. [username]
-
 
 export default function VerifyAccount() {
+
   const router = useRouter();
-  const params = useParams<{ username: string }>();
+  const params = useParams();
   const { toast } = useToast();
 
-  console.log("Params: ", params);
   const form = useForm<z.infer<typeof verifySchema>>({
     resolver: zodResolver(verifySchema),
   });
@@ -45,12 +43,9 @@ export default function VerifyAccount() {
 
       router.replace('/sign-in');
     } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
       toast({
         title: 'Verification Failed',
-        description:
-          axiosError.response?.data.message ??
-          'An error occurred. Please try again.',
+        description: 'An error occurred. Please try again.',
         variant: 'destructive',
       });
     }

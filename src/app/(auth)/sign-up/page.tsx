@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDebounce } from 'usehooks-ts';
 import * as z from 'zod';
-
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -31,10 +30,9 @@ export default function SignUpForm() {
   const debouncedUsername = useDebounce(username, 300);
 
   const router = useRouter();
-
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof signUpSchema>>({
+  const form = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       username: '',
@@ -42,25 +40,20 @@ export default function SignUpForm() {
       password: '',
     },
   });
+
   useEffect(() => {
     const checkUsernameUnique = async () => {
       if (debouncedUsername) {
         setIsCheckingUsername(true);
-        setUsernameMessage(''); // Reset message
+        setUsernameMessage('');
         try {
-          // GET request to API endpoint or route check-username-unique
           const response = await axios.get<ApiResponse>(
             `/api/check-username-unique?username=${debouncedUsername}`
           );
-          // console.log(response);
-          // o/p : { success: true, data: { username: 'jinks' } }
           setUsernameMessage(response.data.message);
         } catch (error) {
-          const axiosError = error as AxiosError<ApiResponse>;
-          setUsernameMessage(
-            axiosError.response?.data.message ?? 'Error checking username'
-          );
-        } finally {// this always runs
+          setUsernameMessage('Error checking username');
+        } finally {
           setIsCheckingUsername(false);
         }
       }
@@ -73,7 +66,6 @@ export default function SignUpForm() {
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
     try {
-      // console.log("data is: ", data);
       const response = await axios.post<ApiResponse>('/api/sign-up', data);
 
       toast({
@@ -81,22 +73,15 @@ export default function SignUpForm() {
         description: response.data.message,
       });
 
-      //router.redirect() can also be used 
       router.replace(`/verify/${username}`);
 
       setIsSubmitting(false);
     } catch (error) {
+
       console.error('Error during sign-up:', error);
-
-      const axiosError = error as AxiosError<ApiResponse>;
-
-      // Default error message
-      let errorMessage = axiosError.response?.data.message;
-      ('There was a problem with your sign-up. Please try again.');
-
       toast({
         title: 'Sign Up Failed',
-        description: errorMessage,
+        description: 'There was a problem with your sign-up. Please try again.',
         variant: 'destructive',
       });
 
@@ -109,12 +94,14 @@ export default function SignUpForm() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-800">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+
         <div className="text-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
             Join WhisperBack
           </h1>
           <p className="mb-4">Sign up to start whisper your feedback</p>
         </div>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
@@ -153,7 +140,6 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <Input {...field} name="email" />
-                  <p className='text-muted text-gray-400 text-sm'>We will send you a verification code</p>
                   <FormMessage />
                 </FormItem>
               )}
